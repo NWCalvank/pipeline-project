@@ -1,0 +1,55 @@
+{
+  "name": "vue-app",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "build": "vue-cli-service build",
+    "docker:clean": "docker rmi vue-app",
+    "docker:install": "docker exec app npm install",
+    "docker:uninstall": "docker exec app npm uninstall",
+    "docker:start": "docker-compose up",
+    "docker:stop": "docker-compose down",
+    "lint": "vue-cli-service lint",
+    "postdocker:install": "command -v docker && npm run sync-deps",
+    "postdocker:uninstall": "command -v docker && npm run sync-deps",
+    "serve": "vue-cli-service serve",
+    "sync-deps": "npm run sync-pkg && npm run sync-pkg-lock",
+    "sync-pkg": "docker cp app:/app/package.json ./package.json",
+    "sync-pkg-lock": "docker cp app:/app/package-lock.json ./package-lock.json"
+  },
+  "dependencies": {
+    "vue": "^2.5.17",
+    "vue-class-component": "^6.0.0",
+    "vue-property-decorator": "^7.0.0",
+    "vue-router": "^3.0.1"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "^3.0.5",
+    "@vue/cli-plugin-eslint": "^3.0.5",
+    "@vue/cli-plugin-typescript": "^3.0.5",
+    "@vue/cli-service": "^3.0.5",
+    "@vue/eslint-config-prettier": "^4.0.0",
+    "@vue/eslint-config-typescript": "^3.1.0",
+    "babel-eslint": "^10.0.1",
+    "eslint": "^5.8.0",
+    "eslint-plugin-vue": "^5.0.0-0",
+    "lint-staged": "^7.2.2",
+    "node-sass": "^4.9.0",
+    "sass-loader": "^7.0.1",
+    "typescript": "^3.0.0",
+    "vue-template-compiler": "^2.5.17"
+  },
+  "gitHooks": {
+    "pre-commit": "lint-staged"
+  },
+  "lint-staged": {
+    "*.js": [
+      "vue-cli-service lint",
+      "git add"
+    ],
+    "*.vue": [
+      "vue-cli-service lint",
+      "git add"
+    ]
+  }
+}

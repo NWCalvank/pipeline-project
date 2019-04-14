@@ -1,0 +1,52 @@
+version: '3'
+services:
+
+  client:
+    build: ./client
+    container_name: client
+    image: pipeline-client
+    volumes:
+       - ./client/src:/app/src
+       - ./client/public:/app/public
+    ports:
+       - 8080:8080
+    depends_on:
+      - api
+    tty: true
+
+  api:
+    build: ./api
+    container_name: api
+    image: pipeline-api
+    ports:
+      - 5000:5000
+    volumes:
+      - ./api/src:/app/src
+      - ./api/spec:/app/spec
+      - dist:/app/dist
+    command: ["npm", "run", "server"]
+    depends_on:
+      - dev-server
+    tty: true
+
+  dev-server:
+    build: ./api
+    container_name: dev-server
+    image: pipeline-dev-server
+    command: ["npm", "run", "dev"]
+    volumes:
+      - ./api/src:/app/src
+      - ./api/spec:/app/spec
+      - dist:/app/dist
+    depends_on:
+      - db
+    tty: true
+
+  db:
+    image: mongo:4.0
+    container_name: db
+    ports:
+      - 27100:27017
+
+volumes:
+  dist:
